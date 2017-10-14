@@ -21,7 +21,7 @@ var MisReport = form_common.FormWidget.extend({
         this.mis_report_data = null;
         this.mis_report_instance_id = false;
         this.field_manager.on("view_content_has_changed", this, this.reload_widget);
-        this.account_analytic_id = undefined;
+        this.analytic_account_id = undefined;
         this.analytic_account_placeholder = _t("Analytic Account");
         this.analytic_account_domain = [];
     },
@@ -32,15 +32,15 @@ var MisReport = form_common.FormWidget.extend({
         self.init_fields();
     },
 
-    init_account_analytic_id: function() {
+    init_analytic_account_id: function() {
         var self = this;
-        if (self['account_analytic_id'] !== undefined) {
-            self.account_m2o.set_value(self['account_analytic_id']);
+        if (self['analytic_account_id'] !== undefined) {
+            self.account_m2o.set_value(self['analytic_account_id']);
         } else {
-            var val = self.getParent().dataset.context['account_analytic_id'];
+            var val = self.getParent().dataset.context['analytic_account_id'];
             if (val) {
                 self.account_m2o.set_value(val);
-                self['account_analytic_id'] = val
+                self['analytic_account_id'] = val
             }
         }
     },
@@ -72,10 +72,10 @@ var MisReport = form_common.FormWidget.extend({
                 modifiers: '{}',
             },
         });
-        self.init_account_analytic_id()
+        self.init_analytic_account_id()
         self.account_m2o.prependTo(self.$(".oe_mis_builder_analytic_account"));
         self.account_m2o.$input.focusout(function(){
-            self.set_account_analytic_id()
+            self.set_analytic_account_id()
         });
     },
 
@@ -106,7 +106,7 @@ var MisReport = form_common.FormWidget.extend({
         if (this.mis_report_instance_id){
             context.active_ids = [this.mis_report_instance_id];
         }
-        context['account_analytic_id'] = self.get_account_analytic_id();
+        context['analytic_account_id'] = self.get_analytic_account_id();
         return context;
     },
 
@@ -190,12 +190,12 @@ var MisReport = form_common.FormWidget.extend({
         }
     },
 
-    set_account_analytic_id: function() {
+    set_analytic_account_id: function() {
         var self = this;
-        self.account_analytic_id = self.get_account_analytic_id();
+        self.analytic_account_id = self.get_analytic_account_id();
     },
 
-    get_account_analytic_id: function() {
+    get_analytic_account_id: function() {
         var self = this;
         return self.account_m2o.get_value();
     },
