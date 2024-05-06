@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <templates>
 
-    <t t-name="mis_builder.MisReportWidget" owl="1">
+    <t t-name="mis_builder.MisReportWidget">
         <div class="oe_mis_builder_content">
             <t t-if="state.mis_report_data">
                 <div class="oe_mis_builder_cp">
@@ -13,8 +13,7 @@
                         </div>
                         <div class="oe_mis_builder_cp_right_bottom">
                             <div class="oe_mis_builder_filter_buttons">
-                                <FilterMenu t-if="showSearchBar" />
-                                <DatePicker
+                                <DateTimePicker
                                     date="state.pivot_date"
                                     onDateTimeChanged="onDateTimeChanged.bind(this)"
                                     placeholder="'Base date...'"

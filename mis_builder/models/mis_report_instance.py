@@ -477,7 +477,7 @@ class MisReportInstance(models.Model):
     _description = "MIS Report Instance"
 
     name = fields.Char(required=True, translate=True)
-    description = fields.Char(related="report_id.description", readonly=True)
+    description = fields.Char(related="report_id.description")
     date = fields.Date(
         string="Base date", help="Report base date " "(leave empty to use current date)"
     )
@@ -539,12 +539,10 @@ class MisReportInstance(models.Model):
     temporary = fields.Boolean(default=False)
     source_aml_model_id = fields.Many2one(
         related="report_id.move_lines_source",
-        readonly=True,
     )
     source_aml_model_name = fields.Char(
         related="source_aml_model_id.model",
         related_sudo=True,
-        readonly=True,
     )
     analytic_domain = fields.Text(
         default="[]",
