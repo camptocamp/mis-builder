@@ -363,8 +363,19 @@ class TestAEP(common.TransactionCase):
         self.aep.parse_expr(expr)
         self.aep.done_parsing()
 
+        tax_group = self.env["account.tax.group"].create(dict(name="test tax group"))
+
         tax = self.env["account.tax"].create(
-            dict(name="test tax", active=True, amount=0, company_id=self.company.id)
+            dict(
+                name="test tax",
+                active=True,
+                amount=0,
+                company_id=self.company.id,
+                tax_group_id=tax_group.id,
+                country_id=self.env["res.country"]
+                .search([("code", "=", "US")], limit=1)
+                .id,
+            )
         )
         move = self._create_move(
             date=datetime.date(self.prev_year, 12, 1),

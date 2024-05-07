@@ -147,18 +147,17 @@ class MisReportKpi(models.Model):
 
     _order = "sequence, id"
 
-    def name_get(self):
-        res = []
+    @api.depends("description")
+    def _compute_display_name(self):
         for rec in self:
-            name = f"{rec.description} ({rec.name})"
-            res.append((rec.id, name))
-        return res
+            rec.display_name = f"{rec.description} ({rec.name})"
+            return rec
 
     @api.model
     def name_search(self, name="", args=None, operator="ilike", limit=100):
         domain = args or []
         domain += ["|", ("name", operator, name), ("description", operator, name)]
-        return self.search(domain, limit=limit).name_get()
+        return self.search(domain, limit=limit)._compute_display_name()
 
     @api.constrains("name")
     def _check_name(self):
@@ -292,7 +291,7 @@ class MisReportKpiExpression(models.Model):
     _description = "MIS Report KPI Expression"
     _order = "sequence, name, id"
 
-    sequence = fields.Integer(related="subkpi_id.sequence", store=True, readonly=True)
+    sequence = fields.Integer(related="subkpi_id.sequence", store=True)
     name = fields.Char(string="Expression")
     kpi_id = fields.Many2one("mis.report.kpi", required=True, ondelete="cascade")
     # TODO FIXME set readonly=True when onchange('subkpi_ids') below works
@@ -306,7 +305,14 @@ class MisReportKpiExpression(models.Model):
         )
     ]
 
-    def name_get(self):
+    @api.depends(
+        "kpi_id.description",
+        "subkpi_id.description",
+        "kpi_id.name",
+        "subkpi_id.name",
+        "kpi_id.display_name",
+    )
+    def _compute_display_name(self):
         res = []
         for rec in self:
             kpi = rec.kpi_id
@@ -317,7 +323,8 @@ class MisReportKpiExpression(models.Model):
                 )
             else:
                 name = rec.kpi_id.display_name
-            res.append((rec.id, name))
+            rec.display_name = name
+            res.append(rec)
         return res
 
     @api.model
@@ -354,7 +361,7 @@ class MisReportKpiExpression(models.Model):
             ]
         )
         domain = osv_expression.AND([domain, name_search_domain])
-        return self.search(domain, limit=limit).name_get()
+        return self.search(domain, limit=limit)._compute_display_name()
 
 
 class MisReportQuery(models.Model):

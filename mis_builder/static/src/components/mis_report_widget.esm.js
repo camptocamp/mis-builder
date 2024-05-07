@@ -2,9 +2,9 @@
 
 import {Component, onWillStart, useState, useSubEnv} from "@odoo/owl";
 import {useBus, useService} from "@web/core/utils/hooks";
-import {DatePicker} from "@web/core/datepicker/datepicker";
-import {FilterMenu} from "@web/search/filter_menu/filter_menu";
+import {DateTimePicker} from "@web/core/datetime/datetime_picker";
 import {SearchBar} from "@web/search/search_bar/search_bar";
+import {SearchBarMenu} from "@web/search/search_bar_menu/search_bar_menu";
 import {SearchModel} from "@web/search/search_model";
 import {parseDate} from "@web/core/l10n/dates";
 import {registry} from "@web/core/registry";
@@ -176,7 +176,11 @@ export class MisReportWidget extends Component {
     }
 }
 
-MisReportWidget.components = {FilterMenu, SearchBar, DatePicker};
+MisReportWidget.components = {SearchBarMenu, SearchBar, DateTimePicker};
 MisReportWidget.template = "mis_builder.MisReportWidget";
 
-registry.category("fields").add("mis_report_widget", MisReportWidget);
+export const misReportWidget = {
+    component: MisReportWidget,
+};
+
+registry.category("fields").add("mis_report_widget", misReportWidget);
